@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root { 
+    
+    --primary-main:  #D4AF37; 
+    --primary-dark: #1F4F4A;  
+    --primary-light: #4F8F8B; ; 
+    
+    --bg-primary: #F7F6F2; 
+    --bg-secondary: #1F4F4A; 
+    
+    --text-primary: #1F1F1F; 
+    --text-secondary: #4F8F8B; 
+    --text-light: #FFFFFF; 
+    
+    --border-color: #D8D6CF; 
+    
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2); 
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15); 
+}
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
