@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../componentStyles/ImageSlider.css";
+import banner2 from "../../public/images/Adire.png";
 import mkz from "../../public/images/mkz1.png";
-import banner2 from "../../public/images/Banner-2.jpg";
-import banner3 from "../../public/images/Banner-3.jpg";
-import banner4 from "../../public/images/Banner-4.jpg";
+import banner3 from "../../public/images/mkz4.png";
+import banner4 from "../../public/images/mkz3.png";
 
-const images = [mkz, banner2, banner3, banner4];
+const images = [banner2, mkz, banner3, banner4];
 
 function ImageSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -29,7 +29,10 @@ function ImageSlider() {
 
         <div className="slider-dots">
           {images.map((_, index) => (
-            <span className={`dot ${index===currentIndex ? 'active' : ""}`} />
+            <span
+              className={`dot ${index === currentIndex ? "active" : ""}`}
+              onClick={() => setCurrentIndex(index)}
+            />
           ))}
         </div>
       </div>
