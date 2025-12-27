@@ -9,9 +9,9 @@ function Product({ product }) {
         setRating(rating)
     }
   return (
-    <Link to={product._id} className="product_id">
+    <Link to={`/products/${product._id}`} className="product_id">
       <div className="product-card">
-        <img src={product.image[0].url} alt={product.name} />
+        <img src={product.image[0].url} alt={product.name} className="product-image-card" />
         <div className="product-details">
           <h3 className="product-title">Product1</h3>
           <p className="product-price">

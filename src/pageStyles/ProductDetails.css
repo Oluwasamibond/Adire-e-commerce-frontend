@@ -104,7 +104,7 @@
   .add-to-cart-btn {
     width: 100%;
     padding: 12px 20px;
-    background: var(--border-color);
+    background: var(--primary-main);
     border: 1px solid var(--bg-primary);
     border-radius: 8px;
     font-size: 16px;
@@ -114,10 +114,9 @@
   }
   
   .add-to-cart-btn:hover {
-    background: var(--bg-secondary);
+    background: #374759
   }
   
-
   .reviews-container {
     grid-column: 1 / -1;
     margin-top: 40px;
@@ -143,7 +142,7 @@
   }
   
   .submit-review-btn {
-    background: var(--bg-primary);
+    background: var(--primary-main);
     color: white;
     padding: 10px 20px;
     border: none;
