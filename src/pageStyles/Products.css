@@ -33,11 +33,11 @@
   text-transform: uppercase;
   transition: background-color 0.3s;
   border-radius: 4px;
-  color: var(--border-color);
+  color: var(--text-primary);
 }
 
 .filter-section li:hover {
-  background-color: #efefef;
+  background-color: var(--primary-dark);
 }
 
 .filter-section li.active {

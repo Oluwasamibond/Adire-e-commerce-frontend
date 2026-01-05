@@ -3,9 +3,18 @@ import axios from "axios";
 
 export const getProduct = createAsyncThunk(
   "product/getProduct",
-  async (_, { rejectWithValue }) => {
+  async ({ keyword, page = 1, category }, { rejectWithValue }) => {
     try {
-      const link = "/api/products";
+      let link = '/api/products?page=' + page;
+      if(category){
+        link += `&category=${category}`;
+      }
+      if (keyword) {
+        link += `&keyword=${keyword}`;
+      }
+      // const link = keyword
+      //   ? `/api/products?keyword=${encodeURIComponent(keyword)}&page=${page}`
+      //   : `/api/products?page=${page}`;
       const { data } = await axios.get(link);
       return data;
     } catch (error) {
@@ -35,7 +44,9 @@ const productSlice = createSlice({
     productCount: 0,
     loading: false,
     error: null,
-    product:null
+    product: null,
+    resultPerPage: 4,
+    totalPages: 0,
   },
   reducers: {
     removeErrors: (state) => {
@@ -52,26 +63,33 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.products = action.payload.products;
+        state.productCount = action.payload.ProductCount;
+        state.resultPerPage = action.payload.resultPerPage;
+        state.totalPages = action.payload.totalPages;
       })
-      .addCase(getProduct.rejected, (state) => {
+      .addCase(getProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Something went wrong";
-      })
+        state.products = [];
+      });
 
-      // Product Details
+    // Product Details
 
-      builder.addCase(getProductDetails.pending, (state) => {
+    builder
+      .addCase(getProductDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.product = [];
       })
       .addCase(getProductDetails.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.product = action.payload.product;
+        state.product = action.payload.product || [];
       })
       .addCase(getProductDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Something went wrong";
+        state.product = [];
       });
   },
 });

@@ -13,8 +13,8 @@ function Product({ product }) {
       <div className="product-card">
         <img src={product.image[0].url} alt={product.name} className="product-image-card" />
         <div className="product-details">
-          <h3 className="product-title">Product1</h3>
-          <p className="product-price">
+          <h3 className="product-title">{product.name}</h3>
+          <p className="home-price">
             <strong>Price</strong>500/-
           </p>
           <div className="rating_container">
