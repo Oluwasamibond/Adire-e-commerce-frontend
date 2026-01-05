@@ -97,7 +97,7 @@
   }
   
   .form-links a {
-    color:var(--border-color);
+    color:var(--primary-main);
     margin-left: 10px;
     
   }
