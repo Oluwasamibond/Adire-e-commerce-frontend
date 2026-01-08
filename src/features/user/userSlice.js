@@ -16,6 +16,22 @@ export const register = createAsyncThunk("user/register", async (userData, {reje
     }
 })
 
+// Login API
+
+export const login = createAsyncThunk("user/login", async ({email, password}, {rejectWithValue}) => {
+    try {
+        const config = {
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        }
+          const {data} =  await axios.post('/api/users/login', {email, password}, config);
+            return data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data || 'Registration failed. Please try again.');
+    }
+})
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
@@ -49,6 +65,26 @@ const userSlice = createSlice({
         .addCase(register.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload?.message || 'Registration failed. Please try again.';
+            state.user = null;
+            state.isAuthenticated = false;
+        })
+
+
+          // Login cases
+        builder.addCase(login.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(login.fulfilled, (state, action) => {
+            state.loading = false,
+            state.error = null
+            state.success = action.payload.success;
+            state.user = action.payload?.user || null;
+            state.isAuthenticated = Boolean(action.payload?.user);
+        })
+        .addCase(login.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload?.message || 'Login failed. Please try again.';
             state.user = null;
             state.isAuthenticated = false;
         })
