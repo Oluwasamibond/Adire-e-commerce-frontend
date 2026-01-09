@@ -11,8 +11,7 @@ function Register() {
     email: "",
     password: "",
   });
-  const [avatar, setAvatar] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState("./images/avatar.png");
+  
   const { name, email, password } = user;
   const {success, loading, error} = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -46,7 +45,6 @@ function Register() {
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("password", password);
-    myForm.set("avatar", avatar);
     
     for (let pair of myForm.entries()) {
         console.log(pair[0] + "- " + pair[1]);
@@ -63,7 +61,7 @@ function Register() {
 
     useEffect(() => {
       if (success) {
-        toast.success("User registered successfully", { position: "top-center", autoClose: 3000 });
+        toast.success("Registration Successful", { position: "top-center", autoClose: 3000 });
         dispatch(removeSuccess())
         navigate("/login");
       }
@@ -101,17 +99,7 @@ function Register() {
               onChange={registerDataChange}
             />
           </div>
-          <div className="input-group avatar-group">
-            <input
-              type="file"
-              name="avatar"
-              className="file-input"
-              accept="image/"
-              onChange={registerDataChange}
-            />
-            <img src={avatarPreview} alt="Avatar Prview" className="avatar" />
-          </div>
-          <button className="authBtn">Sign Up</button>
+          <button className="authBtn">{loading ? 'Signning Up': 'Sign Up'}</button>
           <p className="form-links">
             Already have an account? <Link to="/login">Sign in here</Link>
           </p>

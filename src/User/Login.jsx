@@ -40,6 +40,7 @@ function Login() {
     <div className="form-container container">
       <div className="form-content">
         <form className="form" onSubmit={loginSubmit}>
+          <h2>Sign In</h2>
           <div className="input-group">
             <input
               type="email"
