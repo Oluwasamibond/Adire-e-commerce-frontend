@@ -6,6 +6,7 @@
     padding: 5px 15px;
     position: fixed;
     top: 0px;
+    bottom: 91%;
     right: 0px;
     z-index: 1000;
     transition: background-color 0.3s ease;
@@ -25,7 +26,7 @@
 .profile-name {
     font-size: 18px;
     font-weight: bold;
-    color: var(--text-light);
+    color: var(--primary-main);
 }
 
 .menu-options {

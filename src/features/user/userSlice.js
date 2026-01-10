@@ -64,6 +64,21 @@ export const loadUser = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk(
+  "user/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post("/api/users/logout", {withCredentials:true});
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Logout failed. Please try again."
+      );
+    }
+  }
+);
+
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -143,6 +158,23 @@ const userSlice = createSlice({
           action.payload?.message || "Failed to load user profile. Please try again.";
         state.user = null;
         state.isAuthenticated = false;
+      });
+
+       // Logout cases
+    builder
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.loading = false, 
+        state.error = null;
+        state.user = null;
+        state.isAuthenticated = false
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Logout failed. Please try again.";
       });
   },
 });

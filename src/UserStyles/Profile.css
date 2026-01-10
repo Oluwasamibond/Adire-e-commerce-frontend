@@ -40,7 +40,7 @@
   .profile-image a {
     display: inline-block;
     padding: 0.75rem 2rem;
-    background-color: var(--border-color);
+    background-color: var(--primary-dark);
     color: white;
     border-radius: 30px;
     text-decoration: none;
@@ -50,7 +50,7 @@
   }
   
   .profile-image a:hover {
-    background-color: var( --primary-dark);
+    background-color: var( --primary-main);
     transform: translateY(-2px);
   }
   
@@ -87,7 +87,7 @@
   
   .profile-detail p {
     font-size: 1.1rem;
-    color: var(--bg-primary);
+    color: var(--text-primary);
     margin: 0;
     padding-left: 1rem;
     font-weight: 500;
@@ -102,7 +102,7 @@
   
   .profile-buttons a {
     padding: 0.875rem 2rem;
-    background-color: var(--border-color);
+    background-color: var(--bg-secondary);
     color: white;
     text-decoration: none;
     border-radius: 10px;
@@ -112,7 +112,7 @@
   }
   
   .profile-buttons a:hover {
-    background-color: var(--bg-secondary);
+    background-color: var(--primary-main);
     transform: translateY(-2px);
   }
   
