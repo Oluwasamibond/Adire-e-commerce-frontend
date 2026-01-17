@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from "react";
 import "../UserStyles/Form.css";
+import PageTitle from "../components/PageTitle";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
+  forgotPassword,
   removeErrors,
   removeSuccess,
-  updateProfile,
 } from "../features/user/userSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
-function UpdateProfile() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const { user, error, success, message, loading } = useSelector(
-    (state) => state.user
+function ForgotPassword() {
+  const { loading, error, success, message } = useSelector(
+    (state) => state.user,
   );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const updateSubmit = (e) => {
+
+  const [email, setEmail] = useState("");
+  const forgotPasswordEmail = (e) => {
     e.preventDefault();
     const myForm = new FormData();
-    myForm.set("name", name);
     myForm.set("email", email);
-    dispatch(updateProfile(myForm));
+    dispatch(forgotPassword(myForm));
+    setEmail("");
   };
+
   useEffect(() => {
     if (error) {
       toast.error(error, { position: "top-center", autoClose: 3000 });
@@ -37,51 +38,38 @@ function UpdateProfile() {
     if (success) {
       toast.success(message, { position: "top-center", autoClose: 3000 });
       dispatch(removeSuccess());
-       navigate("/profile");
     }
   }, [dispatch, success]);
-
-  useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setEmail(user.email);
-    }
-  },[user]);
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <>
-          <Navbar/>
-          <div className="container update-container">
-            <div className="form-content">
-              <form className="form" onSubmit={updateSubmit}>
-                <h2>Update Profile</h2>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    name="name"
-                  />
-                </div>
+          <PageTitle title="Forgot Password" />
+          <Navbar />
+          <div className="container forgot-container">
+            <div className="form-content email-group">
+              <form className="form" onSubmit={forgotPasswordEmail}>
+                <h2>Forgot Password</h2>
                 <div className="input-group">
                   <input
                     type="email"
+                    placeholder="Enter your registered email"
+                    name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    name="email"
                   />
                 </div>
-                <button className="authBtn">Update</button>
+                <button className="authBtn">Send</button>
               </form>
             </div>
           </div>
+          <Footer />
         </>
       )}
     </>
   );
 }
 
-export default UpdateProfile;
+export default ForgotPassword;

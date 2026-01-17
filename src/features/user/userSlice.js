@@ -11,7 +11,7 @@ export const register = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         "/api/users/register",
         userData,
         config
@@ -78,6 +78,63 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (userData, { rejectWithValue }) => {
+    try {
+       const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.put("/api/users/profile/update", userData, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || {message: 'Profile update failed'}
+      );
+    }
+  }
+);
+
+export const updatePassword = createAsyncThunk(
+  "user/updatePassword",
+  async (userData, { rejectWithValue }) => {
+    try {
+       const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.put("/api/users/password/update", userData, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || {message:'Password update failed'}
+      );
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  "user/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+       const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post("/api/users/password/forgot", email, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || {message:'Password reset failed'}
+      );
+    }
+  }
+);
+
 
 const userSlice = createSlice({
   name: "user",
@@ -87,6 +144,7 @@ const userSlice = createSlice({
     error: null,
     success: false,
     isAuthenticated: false,
+    message: null
   },
   reducers: {
     removeErrors: (state) => {
@@ -175,6 +233,57 @@ const userSlice = createSlice({
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Logout failed. Please try again.";
+      });
+
+          // Update profile
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false, 
+        state.error = null;
+        state.user = action.payload?.user || null
+        state.success = action.payload?.success
+        state.message = action.payload?.message
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Profile update failed. Please try again later";
+      });
+
+            // Update user password
+    builder
+      .addCase(updatePassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePassword.fulfilled, (state, action) => {
+        state.loading = false, 
+        state.error = null;
+        state.success = action.payload?.success;
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Password update failed. Please try again later";
+      });
+
+               // Forgot password
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false, 
+        state.error = null;
+        state.success = action.payload?.success;
+        state.message = action.payload?.message;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Email sent failed. Please try again later";
       });
   },
 });
