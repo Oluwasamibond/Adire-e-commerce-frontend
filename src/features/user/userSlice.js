@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../../config";
 
 // Register API
 export const register = createAsyncThunk(
@@ -37,7 +38,7 @@ export const login = createAsyncThunk(
         },
       };
       const { data } = await axios.post(
-        "/api/users/login",
+        `${API_URL}/login`,
         { email, password },
         config
       );
@@ -170,9 +171,7 @@ const userSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          action.payload?.message ||
-          "Failed to load user profile. Please try again.";
+        state.error = action.payload?.message ||"Registration Failed. Please try again.";
         state.user = null;
         state.isAuthenticated = false;
       });
