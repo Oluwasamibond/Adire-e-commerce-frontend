@@ -81,6 +81,7 @@
    
    .shipping-submit-btn:hover {
     background: var(--primary-dark);
+    color: var(--text-light);
    }
    
 
