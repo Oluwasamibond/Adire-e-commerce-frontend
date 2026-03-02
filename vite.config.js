@@ -6,9 +6,15 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    host: true, // allow network connections
+    port: 5173,
+    allowedHosts: [
+      "localhost",
+      "unmannish-suffusedly-charolette.ngrok-free.dev" // your ngrok frontend URL
+    ],
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: "http://localhost:8000", // backend is now port 8000
         changeOrigin: true,
         secure: false,
       },

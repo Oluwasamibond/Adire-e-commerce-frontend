@@ -10,9 +10,9 @@ export const register = createAsyncThunk(
       const config = {
         headers: {
           "Content-Type": "application/json",
-        },
+        }, withCredentials: true
       };
-      const { data } = await axios.put(
+      const { data } = await axios.post(
         "/api/users/register",
         userData,
         config
@@ -55,11 +55,11 @@ export const loadUser = createAsyncThunk(
   "user/loadUser",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get("/api/users/profile");
+      const { data } = await axios.get("/api/users/profile", {withCredentials:true});
       return data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Login failed. Please try again."
+        error.response?.data || "Failed to load user. Please try again."
       );
     }
   }

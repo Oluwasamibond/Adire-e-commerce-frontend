@@ -25,7 +25,7 @@ function OrderConfirm() {
       shippingCharges,
       total,
     };
-    sessionStorage.setItem("orderItem", JSON.stringify(data));
+    //sessionStorage.setItem("orderItem", JSON.stringify(data));
     navigate("/process/payment");
   };
   return (
