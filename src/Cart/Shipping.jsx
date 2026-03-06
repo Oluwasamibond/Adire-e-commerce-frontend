@@ -31,9 +31,18 @@ function Shipping() {
         position: "top-center",
         autoClose: 3000,
       });
-      return
+      return;
     }
-    dispatch(saveShippingInfo({ address, zipcode, phoneNumber, country, state, city }));
+    dispatch(
+      saveShippingInfo({
+        address,
+        zipCode: zipcode,
+        phoneNo: phoneNumber,
+        country,
+        state,
+        city,
+      }),
+    );
     navigate("/order/confirm");
   };
 

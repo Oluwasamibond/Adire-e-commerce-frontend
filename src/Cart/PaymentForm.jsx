@@ -10,6 +10,8 @@ const PaymentForm = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const navigate = useNavigate();
 
+   const shippingInfo = JSON.parse(localStorage.getItem("shippingInfo"));
+
   const [shippingMethod, setShippingMethod] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -53,12 +55,12 @@ const PaymentForm = () => {
           image: item.image || "default.png",
         })),
         shippingInfo: {
-          address: shippingMethod.address,
-          city: shippingMethod.city,
-          state: shippingMethod.state,
-          country: shippingMethod.country,
-          zipCode: shippingMethod.zipCode,
-          phoneNo: shippingMethod.phoneNo,
+          address: shippingInfo.address,
+          city: shippingInfo.city,
+          state: shippingInfo.state,
+          country: shippingInfo.country,
+          zipCode: shippingInfo.zipCode,
+          phoneNo: shippingInfo.phoneNo,
         },
         itemsPrice: subtotal,
         taxPrice: tax,
@@ -71,7 +73,7 @@ const PaymentForm = () => {
       const { data } = await axios.post(
         "http://localhost:8000/api/payment/paystack/initialize",
         orderPayload,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success && data.authorization_url) {

@@ -36,7 +36,7 @@
   .orders-table th {
     background-color: var(--bg-secondary);
     font-weight: bold;
-    color: var(--text-primary);
+    color: var(--text-light);
   }
   
   .orders-table tbody tr:nth-child(even) {
@@ -57,7 +57,7 @@
     min-height: 70vh;
   }
   .no-order-message{
-    font-size: 40px;;
+    font-size: 20px;;
   }
   .order-link{
     color: var(--bg-secondary);
