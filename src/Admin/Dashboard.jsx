@@ -34,7 +34,7 @@ function Dashboard() {
                 <Inventory className="nav-icon" />
                 All Products
               </Link>
-              <Link to="/admin/products/create" className="nav-link">
+              <Link to="/admin/product/create" className="nav-link">
                 <AddBox className="nav-icon" />
                 Create Product
               </Link>
@@ -89,7 +89,7 @@ function Dashboard() {
             <div className="stat-box">
               <AttachMoney className="icon" />
               <h3>Total Revenue</h3>
-              <p>$15,000</p>
+              <p>#15,000</p>
             </div>
 
             <div className="stat-box">

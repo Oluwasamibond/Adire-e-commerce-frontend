@@ -21,10 +21,13 @@ function ProductDetails() {
   const [comment, setComment] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [yard, setYard] = useState(1);
+  const [selectedImage, setSelectedImage] = useState("");
   const handleRatingChange = (newRating) => {
     setUserRating(newRating);
   };
-  const { loading, error, product, reviewSuccess, reviewLoading } = useSelector((state) => state.product);
+  const { loading, error, product, reviewSuccess, reviewLoading } = useSelector(
+    (state) => state.product,
+  );
   const {
     loading: cartLoading,
     error: cartError,
@@ -60,7 +63,7 @@ function ProductDetails() {
       dispatch(removeMessage());
     }
   }, [dispatch, success, message]);
- 
+
   const decreaseQuantity = () => {
     if (quantity <= 1) {
       toast.error("Quantity cannot be less than 1", {
@@ -123,22 +126,29 @@ function ProductDetails() {
       });
       return;
     }
-      dispatch(createReview({ rating: userRating, comment, productId: id }));
+    dispatch(createReview({ rating: userRating, comment, productId: id }));
   };
 
   useEffect(() => {
-    if(reviewSuccess){
+    if (reviewSuccess) {
       toast.success("Review submitted successfully", {
         position: "top-center",
-        autoClose: 3000})
-        setUserRating(0);
-        setComment("");
-        dispatch(removeSuccess());
-        dispatch(getProductDetails(id));
+        autoClose: 3000,
+      });
+      setUserRating(0);
+      setComment("");
+      dispatch(removeSuccess());
+      dispatch(getProductDetails(id));
     }
   }, [reviewSuccess, id, dispatch]);
 
-   if (loading) {
+  useEffect(() => {
+    if(product && product.image && product.image.length > 0) {
+      setSelectedImage(product.image[0].url);
+    }
+  }, [product]);
+
+  if (loading) {
     return (
       <>
         <Navbar />
@@ -165,10 +175,22 @@ function ProductDetails() {
         <div className="product-detail-container">
           <div className="product-image-container">
             <img
-              src={product.image[0].url.replace("./", "/")}
-              alt="product-title"
+              src={selectedImage}
+              alt={product.name}
               className="product-detail-image"
             />
+            {product.image.length > 1 && (
+              <div className="product-thumbnails">
+                {product.image.map((img, index) => (
+                  <img
+                    src={img.url}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="thumbnail-image"
+                    onClick={() => setSelectedImage(img.url)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="product-info">
@@ -256,7 +278,11 @@ function ProductDetails() {
                 onChange={(e) => setComment(e.target.value)}
                 required
               ></textarea>
-              <button type="submit" className="submit-review-btn" disabled={reviewLoading}>
+              <button
+                type="submit"
+                className="submit-review-btn"
+                disabled={reviewLoading}
+              >
                 {reviewLoading ? "Submitting..." : "Submit Review"}
               </button>
             </form>
