@@ -46,6 +46,19 @@ export const updateProduct = createAsyncThunk(
   },
 );
 
+// Delete product
+export const deleteProduct = createAsyncThunk(
+  "admin/deleteProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const {data} = await axios.delete(`/api/products/admin/product/delete/${productId}`, { withCredentials: true });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while deleting product.");
+    }
+  },
+);
+
 
 const adminSlice = createSlice({
   name: "admin",
@@ -55,6 +68,7 @@ const adminSlice = createSlice({
     loading: false,
     error: null,
     product:{},
+    deleteLoading: false
   },
   reducers: {
     removeErrors: (state) => {
@@ -96,19 +110,28 @@ const adminSlice = createSlice({
       });
 
       
-       builder
+      builder
+      // Update Product
       .addCase(updateProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = false;
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload.success;
-        state.products = action.payload.product;
+        state.success = true;
+
+        // Update product in local products list
+        const index = state.products.findIndex(
+          (p) => p._id === action.payload.product._id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload.product;
+        }
       })
       .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Failed to update product.";
+        state.error = action.payload;
       });
   },
 });

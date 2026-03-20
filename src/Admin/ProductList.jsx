@@ -61,7 +61,7 @@ function ProductList() {
                     <td>{index + 1}</td>
                     <td>
                       <img
-                        src={product.images?.[0]?.url}
+                        src={product.image?.[0]?.url}
                         alt={product.name}
                         className="admin-product-image"
                       />
