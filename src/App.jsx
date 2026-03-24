@@ -24,6 +24,9 @@ import Dashboard from "./Admin/Dashboard";
 import ProductList from "./Admin/ProductList";
 import CreateProduct from "./Admin/CreateProduct";
 import UpdateProduct from "./Admin/UpdateProduct";
+import UserList from "./Admin/UserList";
+import UpdateRole from "./Admin/UpdateRole";
+import OrdersList from "./Admin/OrdersList";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -75,7 +78,7 @@ function App() {
           path="/orders/user"
           element={<ProtectedRoute element={<MyOrders />} />}
         />
-          <Route
+        <Route
           path="/orders/user"
           element={<ProtectedRoute element={<MyOrders />} />}
         />
@@ -85,28 +88,50 @@ function App() {
         />
 
         {/* Admin Routes */}
-         <Route
+        <Route
           path="/admin/dashboard"
           element={<ProtectedRoute element={<Dashboard />} adminOnly={true} />}
         />
-          <Route
+        <Route
           path="/admin/products"
-          element={<ProtectedRoute element={<ProductList />} adminOnly={true} />}
+          element={
+            <ProtectedRoute element={<ProductList />} adminOnly={true} />
+          }
         />
-          <Route
+        <Route
           path="/admin/product/create"
-          element={<ProtectedRoute element={<CreateProduct />} adminOnly={true} />}
+          element={
+            <ProtectedRoute element={<CreateProduct />} adminOnly={true} />
+          }
         />
-           <Route
+        <Route
           path="/admin/products/:updateId"
-          element={<ProtectedRoute element={<UpdateProduct />} adminOnly={true} />}
+          element={
+            <ProtectedRoute element={<UpdateProduct />} adminOnly={true} />
+          }
+        />
+        <Route
+          path="/admin/products/:updateId"
+          element={
+            <ProtectedRoute element={<UpdateProduct />} adminOnly={true} />
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={<ProtectedRoute element={<UserList />} adminOnly={true} />}
+        />
+        <Route
+          path="/admin/users/:id"
+          element={<ProtectedRoute element={<UpdateRole />} adminOnly={true} />}
+        />
+        <Route
+          path="/admin/orders"
+          element={<ProtectedRoute element={<OrdersList />} adminOnly={true} />}
         />
       </Routes>
       {isAuthenticated && <UserDashboard user={user} />}
     </Router>
   );
 }
-
-
 
 export default App;

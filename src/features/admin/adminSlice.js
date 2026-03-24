@@ -52,9 +52,124 @@ export const deleteProduct = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const {data} = await axios.delete(`/api/products/admin/product/delete/${productId}`, { withCredentials: true });
-      return data;
+      return {productId, ...data};
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred while deleting product.");
+    }
+  },
+);
+
+// Fetch All Users
+export const fetchAllUsers = createAsyncThunk(
+  "admin/fetchAllUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.get(`/api/users/admin/users`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while fetching users.");
+    }
+  },
+);
+
+// Get single user details
+export const fetchUserDetails = createAsyncThunk(
+  "admin/fetchUserDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.get(`/api/users/admin/user/${id}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while fetching user details.");
+    }
+  },
+);
+
+// Update User Role
+export const updateUserRole = createAsyncThunk(
+  "admin/updateUserRole",
+  async ({id, role}, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.put(`/api/users/admin/user/${id}`, {role}, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while updating user role.");
+    }
+  },
+);
+
+// Delete User Profile
+export const deleteUser = createAsyncThunk(
+  "admin/deleteUser",
+  async (id, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.delete(`/api/users/admin/user/${id}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while deleting user profile.");
+    }
+  },
+);
+
+// Fetch All Orders
+export const fetchAllOrders = createAsyncThunk(
+  "admin/fetchAllOrders",
+  async (_, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.get("/api/orders/admin/orders", config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while fetching orders.");
+    }
+  },
+);
+
+// Delete orders
+export const deleteOrder = createAsyncThunk(
+  "admin/deleteOrder",
+  async (id, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.delete(`/api/orders/admin/order/${id}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while deleting order.");
+    }
+  },
+);
+
+// Update order status
+export const updateOrderStatus = createAsyncThunk(
+  "admin/updateOrderStatus",
+  async ({id, status}, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers:{
+          'content-type': 'application/json'
+        },
+        withCredentials: true,
+      };
+      const {data} = await axios.put(`/api/orders/admin/order/${id}`, {status}, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while while updating order.");
     }
   },
 );
@@ -68,7 +183,13 @@ const adminSlice = createSlice({
     loading: false,
     error: null,
     product:{},
-    deleteLoading: false
+    deleting: {},
+    users: [],
+    user: {},
+    message: null,
+    orders:[],
+    totalAmount:0,
+    order:{}
   },
   reducers: {
     removeErrors: (state) => {
@@ -77,6 +198,9 @@ const adminSlice = createSlice({
     removeSuccess: (state) => {
       state.success = false;
     },
+    clearMessage:(state) => {
+      state.message = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -133,8 +257,133 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+
+      // Delete Product
+       builder
+      .addCase(deleteProduct.pending, (state, action) => {
+        const productId = action.meta.arg
+        state.deleting[productId] = true
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        const productId = action.payload.productId
+        state.deleting[productId] = false;
+        state.products = state.products.filter((p) => p._id !== action.payload.productId);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        const productId = action.meta.arg
+        state.deleting[productId] = false;
+        state.error = action.payload?.message || "Failed to delete product.";
+      });
+
+      // Fetch All Users
+      builder
+      .addCase(fetchAllUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload.users;
+      })
+      .addCase(fetchAllUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to fetch users.";
+      });
+
+      //Fetch User Details
+      builder
+      .addCase(fetchUserDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(fetchUserDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to fetch user details.";
+      });
+
+      // Update User Role
+      builder
+      .addCase(updateUserRole.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserRole.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success;
+      })
+      .addCase(updateUserRole.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to update user role.";
+      });
+
+      // Delete User
+      builder
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to delete user.";
+      });
+
+      // Fetching All Orders
+         builder
+      .addCase(fetchAllOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload.orders;
+        state.totalAmount = action.payload.totalAmount
+      })
+      .addCase(fetchAllOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to fetch all orders.";
+      });
+
+      // Delete orders
+      builder
+      .addCase(deleteOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success
+        state.message = action.payload.message
+      })
+      .addCase(deleteOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Failed to Delete Order'
+      })
+
+        // update orders status
+      builder
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success
+        state.order = action.payload.order
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Failed to Update Order'
+      })
   },
 });
 
-export const { removeErrors, removeSuccess } = adminSlice.actions;
+export const { removeErrors, removeSuccess, clearMessage } = adminSlice.actions;
 export default adminSlice.reducer;

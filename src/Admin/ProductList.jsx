@@ -5,13 +5,13 @@ import PageTitle from "../components/PageTitle";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAdminProducts, removeErrors } from "../features/Admin/adminSlice";
+import { deleteProduct, fetchAdminProducts, removeErrors, removeSuccess } from "../features/Admin/adminSlice";
 import { Delete, Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
 function ProductList() {
-  const { products, loading, error } = useSelector((state) => state.admin);
+  const { products, loading, error, deleting } = useSelector((state) => state.admin);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAdminProducts());
@@ -22,6 +22,18 @@ function ProductList() {
       dispatch(removeErrors());
     }
   }, [dispatch, error]);
+
+  const handleDelete = (productId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this product?");
+    if (isConfirmed) {
+      dispatch(deleteProduct(productId)).then((action) => {
+        if (action.type === "admin/deleteProduct/fulfilled") {
+          toast.success("Product deleted successfully!", { position: "top-center", autoClose: 3000 });
+          dispatch(removeSuccess())
+        }
+      });
+    }
+  }
   if(!products || products.length === 0) {
     return (
       <div className="product-list-container">
@@ -79,12 +91,10 @@ function ProductList() {
                       >
                         <Edit />
                       </Link>
-                      <Link
-                        to={`/admin/products/${product._id}/delete`}
-                        className="action-icon edit-icon"
-                      >
-                        <Delete />
-                      </Link>
+                      <button className="action-icon delete-icon" disabled={deleting[product._id]} onClick={() => handleDelete(product._id)}>
+                        {deleting[product._id] ? <Loader /> : <Delete />}
+                      </button>
+                    
                     </td>
                   </tr>
                 ))}
