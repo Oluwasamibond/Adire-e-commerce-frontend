@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../AdminStyles/Dashboard.css";
 import {
   AddBox,
@@ -15,8 +15,21 @@ import Navbar from "../components/Navbar";
 import PageTitle from "../components/PageTitle";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAdminProducts, fetchAllOrders } from "../features/Admin/adminSlice";
 
 function Dashboard() {
+  const {products, orders, totalAmount} = useSelector(state => state.admin)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchAdminProducts())
+    dispatch(fetchAllOrders())
+  },[dispatch])
+  const totalProducts = products.length;
+  const totalOrders = orders.length;
+  const outOfStock = products.filter(product=>product.stock === 0).length
+  const inStock = products.filter (product=>product.stock>0).length;
+  const totalReviews = products.reduce((acc,product)=>acc+(product.reviews.length || 0), 0) 
   return (
     <>
       <Navbar />
@@ -58,7 +71,7 @@ function Dashboard() {
 
             <div className="nav-section">
               <h3>Reviews</h3>
-              <Link to="/admin/reviewId" className="nav-link">
+              <Link to="/admin/reviews" className="nav-link">
                 <Star className="nav-icon" />
                 All Reviews
               </Link>
@@ -71,37 +84,37 @@ function Dashboard() {
             <div className="stat-box">
               <Inventory className="icon" />
               <h3>Total Products</h3>
-              <p>150</p>
+              <p>{totalProducts}</p>
             </div>
 
             <div className="stat-box">
               <ShoppingCart className="icon" />
               <h3>Total Orders</h3>
-              <p>150</p>
+              <p>{totalOrders}</p>
             </div>
 
             <div className="stat-box">
               <Star className="icon" />
               <h3>Total Reviews</h3>
-              <p>15</p>
+              <p>{totalReviews}</p>
             </div>
 
             <div className="stat-box">
               <AttachMoney className="icon" />
               <h3>Total Revenue</h3>
-              <p>#15,000</p>
+              <p>{totalAmount}</p>
             </div>
 
             <div className="stat-box">
               <Error className="icon" />
               <h3>Out Stock</h3>
-              <p>15</p>
+              <p>{outOfStock}</p>
             </div>
 
             <div className="stat-box">
               <CheckCircle className="icon" />
               <h3>In Stock</h3>
-              <p>20</p>
+              <p>{inStock}</p>
             </div>
           </div>
 

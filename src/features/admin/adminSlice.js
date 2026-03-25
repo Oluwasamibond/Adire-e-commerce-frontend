@@ -158,21 +158,55 @@ export const deleteOrder = createAsyncThunk(
 // Update order status
 export const updateOrderStatus = createAsyncThunk(
   "admin/updateOrderStatus",
-  async ({id, status}, { rejectWithValue }) => {
+  async ({orderId, status}, { rejectWithValue }) => {
     try {
       const config = {
         headers:{
-          'content-type': 'application/json'
+          'Content-type': 'application/json'
         },
         withCredentials: true,
       };
-      const {data} = await axios.put(`/api/orders/admin/order/${id}`, {status}, config);
+      const {data} = await axios.put(`/api/orders/admin/order/${orderId}`, {status}, config);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred while while updating order.");
     }
   },
 );
+
+
+// Fetch all reviews
+export const fetchProductReviews = createAsyncThunk(
+  "admin/fetchProductReviews",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.get(`/api/products/admin/reviews?id=${productId}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while fetching Reviews.");
+    }
+  },
+);
+
+// Delete Review
+export const deleteReviews = createAsyncThunk(
+  "admin/deleteReviews",
+  async ({productId, reviewId}, { rejectWithValue }) => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const {data} = await axios.delete(`/api/products/admin/reviews?productId=${productId}&id=${reviewId}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred while deleting Product Reviews.");
+    }
+  },
+);
+
 
 
 const adminSlice = createSlice({
@@ -189,7 +223,8 @@ const adminSlice = createSlice({
     message: null,
     orders:[],
     totalAmount:0,
-    order:{}
+    order:{},
+    reviews:[]
   },
   reducers: {
     removeErrors: (state) => {
@@ -381,6 +416,37 @@ const adminSlice = createSlice({
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || 'Failed to Update Order'
+      })
+
+      // Fetching Reviews
+       builder
+      .addCase(fetchProductReviews.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductReviews.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reviews = action.payload.reviews
+      })
+      .addCase(fetchProductReviews.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Failed to Fetch Product Review'
+      })
+
+       // Delete Product Reviews
+       builder
+      .addCase(deleteReviews.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteReviews.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success
+        state.message = action.payload.message
+      })
+      .addCase(deleteReviews.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Failed to Delete Product Review'
       })
   },
 });
