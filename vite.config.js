@@ -14,7 +14,7 @@ export default defineConfig({
     ],
     proxy: {
       "/api": {
-        target: "http://localhost:8000", // backend is now port 8000
+        target: "https://adire-e-commerce-backend.onrender.com", // backend is now port 8000
         changeOrigin: true,
         secure: false,
       },

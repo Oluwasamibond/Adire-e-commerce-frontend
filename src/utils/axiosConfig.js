@@ -1,13 +1,15 @@
 import axios from "axios";
 
-const token = localStorage.getItem("token");
-
 const API = axios.create({
-  baseURL: "http://localhost:8000/api", // your backend
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: token ? `Bearer ${token}` : "",
-  },
+  baseURL: "https://adire-e-commerce-backend.onrender.com/api",
+  headers: { "Content-Type": "application/json" },
+});
+
+// Add Authorization header dynamically
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
 
 export default API;
