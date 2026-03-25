@@ -13,7 +13,6 @@ import {
 } from "@mui/icons-material";
 import Navbar from "../components/Navbar";
 import PageTitle from "../components/PageTitle";
-import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAdminProducts, fetchAllOrders } from "../features/Admin/adminSlice";
